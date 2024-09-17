@@ -56,7 +56,7 @@ def isSprinkling := {⟨1⟩}
 
 -- Now we give standard names to three logical fallacies we've already seen
 def affirm_disjunct := (isRaining ∨ isSprinkling) ⇒ isRaining ⇒ ¬isSprinkling
-def deny_antecedent := (isSprinkling ⇒ isRaining) ⇒ isSprinkling ⇒ ¬isRaining
+def deny_antecedent := (isSprinkling ⇒ isRaining) ⇒ ¬isSprinkling ⇒ ¬isRaining -- correction here 9/15/24
 def affirm_consequent := (isSprinkling ⇒ isRaining) ⇒ isRaining ⇒ isSprinkling
 
 
@@ -69,7 +69,6 @@ def cxs : List BoolInterp := sorry
 -- This "code" should display the resulting interpretations lists of 0/1 strings
 -- It'll work when you fill in an answer above.
 #eval! interpStringsFromInterps cxs 2
-
 
 
 /- #2: [25 points]. Translating counterexamples back into English.
