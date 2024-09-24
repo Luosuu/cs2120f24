@@ -1,4 +1,4 @@
-namespace cs2120f24.arith
+namespace cs2120f24.natArithmetic
 
 /-!
 # Syntax: Expression Language of Arithmetic
@@ -18,36 +18,38 @@ values that the particular interpretation assigns
 to them.
 -/
 
-structure ArithVar : Type :=
+structure Var : Type :=
   mk :: (index: Nat)
-deriving Repr
 
 
-inductive ArithUnOp : Type
-| fac
-deriving Repr
-
-
-inductive ArithBinOp : Type
+-- pull from semantic domain: give syntax to concepts
+inductive BinOp : Type where
 | add
 | sub
 | mul
-deriving Repr
+
+-- pull from semantic domain: give syntax to concepts
+inductive UnOp : Type where
+| inc
+| dec
+| doub
+| halv
+| fac
 
 -- abstract syntax
-inductive ArithExpr : Type
-| lit (from_nat : Nat) : ArithExpr
-| var (from_var : ArithVar)
-| unOp (op : ArithUnOp) (e : ArithExpr)
-| binOp (op : ArithBinOp) (e1 e2 : ArithExpr)
-deriving Repr
+
+inductive Expr : Type where
+| lit (from_nat : Nat) : Expr
+| var (from_var : Var)
+| unOp (op : UnOp) (e : Expr)
+| binOp (op : BinOp) (e1 e2 : Expr)
 
 -- concrete syntax
-notation " { " v " } " => ArithExpr.var v
-notation " [ " n " ] " => ArithExpr.lit n
-notation e " ! " => ArithExpr.unOp ArithUnOp.fac e
-notation e1 " + " e2 => ArithExpr.binOp ArithBinOp.add e1 e2
-notation e1 " - " e2 => ArithExpr.binOp ArithBinOp.sub e1 e2
-notation e1 " * " e2 => ArithExpr.binOp ArithBinOp.mul e1 e2
+notation " { " v " } " => Expr.var v
+notation " [ " n " ] " => Expr.lit n
+notation e " ! " => Expr.unOp UnOp.fac e
+notation e1 " + " e2 => Expr.binOp BinOp.add e1 e2
+notation e1 " - " e2 => Expr.binOp BinOp.sub e1 e2
+notation e1 " * " e2 => Expr.binOp BinOp.mul e1 e2
 
-end cs2120f24.arith
+end cs2120f24.natArithmetic

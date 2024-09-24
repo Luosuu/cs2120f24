@@ -3,7 +3,13 @@ Tianle determined that on Windows, this main file needs to import
 everything that «Cs2120f24».lean
 -/
 
-import «Cs2120f24»
+import «Cs2120f24».Lectures.«02_prop_logic».formal.domain
+import «Cs2120f24».Lectures.«02_prop_logic».formal.interpretation
+import «Cs2120f24».Lectures.«02_prop_logic».formal.model_theory.models
+import «Cs2120f24».Lectures.«02_prop_logic».formal.model_theory.properties
+import «Cs2120f24».Lectures.«02_prop_logic».formal.semantics
+import «Cs2120f24».Lectures.«02_prop_logic».formal.syntax
+import «Cs2120f24».Lectures.«02_prop_logic».formal.model_theory.truth_table
 
 /-
 The first thing to do: open Cs2120f24/Demo/Demo.lean,
