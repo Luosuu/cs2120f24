@@ -1,55 +1,66 @@
-namespace cs2120f24.natArithmetic
-
-/-!
-# Syntax: Expression Language of Arithmetic
-
-Ok, so now that we have the semantic domain, what
-about our expression language? We'll you write it
-almost exactly as for predicate logic, but now the
-arguments and operators are arithmetic, which is to
-say they yield arithmetic results (natural numbers
-in this work).
-
-Just as before we have literals, as before, we'll
-have a *literal* (arithmetic) expression for each
-Nat; we'll have variables and interpretations that
-take variables arguments and return the numerical
-values that the particular interpretation assigns
-to them.
--/
-
-structure Var : Type :=
-  mk :: (index: Nat)
+namespace cs2120f24.natArithmetic.syntax
 
 
--- pull from semantic domain: give syntax to concepts
+-- variables indexed by Nat
+structure Var : Type where
+(index: Nat)
+
+
+-- Unary arithmetic operators.
+inductive UnOp : Type where
+| inc
+| dec
+| doub
+| halve
+| fac
+
+
+-- Binary arithmetic operators
 inductive BinOp : Type where
 | add
 | sub
 | mul
 
--- pull from semantic domain: give syntax to concepts
-inductive UnOp : Type where
-| inc
-| dec
-| doub
-| halv
-| fac
 
--- abstract syntax
+-- Binary relational operators
+inductive RelOp : Type
+| eq
+| le
+| lt
+| ge
+| gt
 
+
+-- Syntax of arithmetic (Nat returning) expressions
 inductive Expr : Type where
 | lit (from_nat : Nat) : Expr
 | var (from_var : Var)
 | unOp (op : UnOp) (e : Expr)
 | binOp (op : BinOp) (e1 e2 : Expr)
 
--- concrete syntax
-notation " { " v " } " => Expr.var v
-notation " [ " n " ] " => Expr.lit n
-notation e " ! " => Expr.unOp UnOp.fac e
-notation e1 " + " e2 => Expr.binOp BinOp.add e1 e2
-notation e1 " - " e2 => Expr.binOp BinOp.sub e1 e2
-notation e1 " * " e2 => Expr.binOp BinOp.mul e1 e2
 
-end cs2120f24.natArithmetic
+-- Syntax of relational (Bool returning) expressions
+inductive RelExpr : Type where
+| mk (op : RelOp) (e1 e2 : Expr)
+
+
+-- Nnotations for our abstract syntax
+notation:max " { " v " } " => Expr.var v
+notation:max " [ " n " ] " => Expr.lit n
+
+
+-- Lean knows precedences and associativites for standard notations
+notation:max e " ! " => Expr.unOp UnOp.fac e
+infixl:65 " + " => Expr.binOp BinOp.add
+infixl:65 " - " => Expr.binOp BinOp.sub
+infixl:70 " * " => Expr.binOp BinOp.mul
+
+
+-- including for these relational operators
+infix:50 " = " => RelExpr.mk RelOp.eq
+infix:50 " ≤ " => RelExpr.mk RelOp.le
+infix:50 " < " => RelExpr.mk RelOp.lt
+infix:50 " ≥ " => RelExpr.mk RelOp.ge
+infix:50 " > " => RelExpr.mk RelOp.gt
+
+end cs2120f24.natArithmetic.syntax
