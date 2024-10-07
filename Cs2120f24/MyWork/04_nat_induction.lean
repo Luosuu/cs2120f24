@@ -367,6 +367,14 @@ def baseSq : Nat := 0
 def stepSq : Nat → Nat → Nat
 | n', sumn' => (n' + 1)^2 + sumn'
 
+-- here's how the stepping up works
+#eval stepSq 0 0  -- return answer for n = 1; expect 1
+#eval stepSq 1 1 -- return answer for n = 2; expect 5
+#eval stepSq 2 5 -- return answer for n = 3; expect 14
+#eval stepSq 3 14 -- return answer for n = 4; expect 30
+#eval stepSq 4 30 -- return answer for n = 5; expect 55
+
+
 def sumSq' : Nat → Nat := Nat.rec baseSq stepSq      -- apply Nat.rec
 
 /-
