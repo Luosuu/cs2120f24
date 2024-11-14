@@ -1,6 +1,6 @@
 namespace cs2120f24.constructiveLogic
 
-/-! HOMEWORK #5. COUNTS FOR TWO ASSIGNMENTS.
+/-! HOMEWORK #6. COUNTS FOR TWO ASSIGNMENTS.
 
 This is an important homework. It gives you an
 opportunity to work out many of the kinks in your
@@ -34,9 +34,9 @@ def andIdempotent   : P ↔ (P ∧ P) :=
 Iff.intro
   -- forward direction: P → P ∧ P
   -- assume p : P, show P ∧ P
-  (fun (p : P) => And.intro p p)
+  (fun (p : P) => (And.intro p p))
   -- backwards direction: P ∧ P → P
-  (fun (pimpp : P ∧ P) => pimpp.left)
+  (fun (h : And P P) => (h.right))
 
 /-!
 In English. We are to show that any proposition
@@ -385,9 +385,9 @@ Backward direction ((¬P ∧ ¬Q) → ¬(P ∨ Q)):
 
 /-!
 EXTRA CREDIT: apply the axiom of the excluded middle
-to give a classical proof of the one proposition that
-you identified as having no constructive proof. The
-axiom is available as Classical.em (p : Prop) : p ∨ ¬p.
+to give a classical proof of any propositions that you
+identified as having no constructive proof. The axiom
+is available as Classical.em (p : Prop) : p ∨ ¬p.
 -/
 
 #check Classical.em
