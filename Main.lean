@@ -3,7 +3,7 @@ Tianle determined that on Windows, this main file needs to import
 everything that «Cs2120f24».lean
 -/
 
-import Cs2120f24
+import «Cs2120f24»
 
 /-
 -- LECTURE FILES
