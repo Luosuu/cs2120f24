@@ -1,4 +1,4 @@
-import «Cs2120f24».Library.propLogic.syntax
+0import «Cs2120f24».Library.propLogic.syntax
 import «Cs2120f24».Library.propLogic.model_theory.counterexamples
 
 namespace cs2120f24.propLogic
@@ -170,18 +170,20 @@ PART #3: Counting Things
 A. Suppose you have a PL expression that uses N distinct PL variables. Give a
 formula that tells you how many interpretations there are for that expression.
 
+2^n
 
 B. Give an algebraic formula for the number of distinct functions there are
 from N Boolean input values to a Boolean output. Two functions are equal in
 our formulation if they produce the same outputs on *all* inputs, otherwise
 they are unequal/distinct.
 
+2^(2^n)
 
 C. Consider a language of arithmetic expressions, where variables now have
 natural number values, rather than Boolean values like PL variables. How
 many interpretations are there for this expression: (X + 2) * (Y - 5) = 0?
 
-Answer:
+Answer: Infinite
 
 Tiny extra credit: give both a model and a counterexample for this formula.
 
