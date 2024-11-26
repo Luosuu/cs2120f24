@@ -291,6 +291,53 @@ example : (t \ { 5 }) ⊆ s :=
   )
 )
 
+example : (t \ { 5 }) ⊆ s :=
+-- by the definition of ⊆ what is to be proved is every element of t except 5 is the element of s
+-- The first step is ∀ introduction: assume n is an arbitary natural number
+(fun (n : Nat) =>
+  -- The next step is → introduction: assume  n ∈ n ∈ (t \ { 5 })
+  (fun (h : n ∈ (t \ { 5 })) =>
+  -- Now in that context, what remains to prove is that n ∈ s
+  -- to do this requires *using* the proof of h to make progress
+  -- understand and use fact that h is a proof of a conjunction (why?)
+  -- if you don't see why review the formal definition of ⊊ (proper subset)
+    (
+      -- from h we can derive l : n ∈ t by And elimination
+      let l := And.left h
+      -- We have thus deduced, l, that n ∈ {3, 4, 5}
+      -- We know that l is a proof of a disjunction
+      -- We finish the proof by case analysis on *l*
+      Or.elim l
+        -- case n = 3
+        (fun neq3 =>
+          -- here we rewrite the goal, n ∈ s, to 3 ∈ s, knowing n = 3
+          --
+          (by  -- given that n = 3 in this case, rewrite goal as 3 ∈ s
+            rw [neq3]
+            -- and finally prove this by Or.introduction
+            exact (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+          )
+        )
+        -- case n = 4 \/ n = 5
+        -- proof by cases analysis again
+        (fun mem45 =>
+          (match mem45 with
+          -- case where n = 4
+          | Or.inl four =>
+            (by
+              rw [four]
+              exact (Or.inr (Or.inr (Or.inr (Or.inr rfl))))
+            )   -- use the same method as used to show 3 ∈ s
+          -- case where n = 5
+          | Or.inr five =>
+            (nomatch And.right h five)
+            -- the final step uses a different axiom to finish it up
+          )
+        )
+    )
+  )
+)
+
 /-! #4 [15 points]
 
 Provide a detailed English-language proof of the proposition
