@@ -270,6 +270,7 @@ def isTransitive {α : Type} (r : Rel α α) : Prop :=
 And.intro
   -- Left: prove (congruentModN n) is reflexive
   -- NOTE: Reflexive (∀ a, R a a):
+  -- a % n = a % n
   (
     fun a => rfl
   )
@@ -293,3 +294,13 @@ And.intro
       -/
       (fun a b c hab hbc => Eq.trans hab hbc)
   )
+
+
+-- NOTE: diff between false.elim and nomatch
+-- Using false.elim
+example (h : False) : 0 = 1 :=
+  False.elim h
+
+-- Using nomatch
+example : ¬(0 = 1) :=
+  fun h => nomatch h
