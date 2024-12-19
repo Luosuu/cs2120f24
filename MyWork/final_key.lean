@@ -146,11 +146,10 @@ that takes as an argument, (l : List Nat), and returns
 a count (Nat) of the number of elements in the list.
 -/
 
+-- ANSWER
 def count {α : Type} : List α → Nat
 | List.nil => 0
-| List.cons _ t => 1 + count t
-
-#reduce count [1,2,4]
+| List.cons _ l' => 1 + count l'
 
 /-
 # B [5 points (2 extra credit points possible)]
@@ -164,13 +163,18 @@ add a comment documenting the expected answer, or (for two
 extra credit points), use example and Eq.refl.
 -/
 
+-- ANSWER
 def prod : List Nat → Nat
-| List.nil => 1  -- multiplicative identity
-| List.cons h t => h * prod t
+| List.nil => 1
+| List.cons n' l' => n' * prod l'
 
--- Test cases
-example : prod [] = 1 := Eq.refl _
-example : prod [2, 3, 4] = 24 := Eq.refl _
+--
+#reduce prod []       -- expect 1
+#reduce prod [1,2,3]  -- expect 6
+
+-- 2 points extra credit if tests are like this
+example : prod [] = 1 := rfl
+example : prod [1,2,3] = 6 := rfl
 
 
 /-
@@ -207,8 +211,10 @@ Nat.rec.{u}
 -/
 
 -- You fill in both definitions here
-def prodBase : Nat := 1  -- base case for sum of squares
-def stepBase (n' : Nat) (ansn' : Nat) : Nat := (n' + 1) * ansn'  -- add n'^2 to previous sum
+
+-- ANSWER
+def prodBase : Nat := 1
+def stepBase (n' ansn' : Nat) := (n' + 1) * ansn'
 
 /-
 This term defines the desired function (will you've done
@@ -221,6 +227,8 @@ is the type of the function being constructed.
 
 -- this term applies it to 5 and is expected to reduces to 55
 #eval (Nat.rec (motive := (λ (_ : Nat) => Nat)) prodBase stepBase) 5
+
+-- OOPS: Right answer is 120, not 55. Ugh. KS.
 
 
 
@@ -262,10 +270,12 @@ List.rec.{u_1, u}
 -- YOU FILL IN YOUR PARTS HERE
 
 -- num elements in []
+-- ANSWER
 def listCountBase : Nat := 0
 
 -- num elements in h::t given t and num elements in t
-def listCountStep (a : α) (t : List α) (anst : Nat) : Nat :=  1 + anst
+-- ANSWER
+def listCountStep (a : α) (t : List α) (anst : Nat) : Nat := anst + 1
 
 -- Check that the type of the total function is correct
 #check List.rec (motive := (λ (_ : List _) => Nat)) listCountBase listCountStep
@@ -303,7 +313,7 @@ protected def append : (xs ys : List α) → List α
 
 /-
 For credit on this question you must define your
-own implementation of list append by applyging the
+own implementation of list append by applying the
 induction principle, List.rec, for Lists to base and
 inductive case arguments: the answer when l1 is nil
 is just l2; and the answer when l1 = h::t, given the
@@ -314,20 +324,14 @@ define appStep giving the step function need to make
 the inductive definition work as required.
 -/
 
-def appBase {α : Type} (l2 : List α) : List α := l2
+-- ANSWER
+def listAppBase {α : Type} := [3,4,5]
+def listAppStep {α : Type} (a : α) (t : List α) (anst : List α) : List α := a::anst
 
-def appStep {α : Type} (h : α) (t : List α) (l2 : List α) (rec : List α) : List α :=
-  h :: rec
+-- ANSWER
+#reduce (List.rec (motive := (λ (_ : List _) => List _)) listAppBase listAppStep) [0,1,2]
 
--- Test cases using List.rec explicitly with type annotations
-#eval (List.rec (motive := λ _ => List Nat) (appBase [4,5])
-  (fun (h : Nat) (t : List Nat) (rec : List Nat) => h :: rec)) [1,2,3]
 
-#eval (List.rec (motive := λ _ => List Nat) (appBase [])
-  (fun (h : Nat) (t : List Nat) (rec : List Nat) => h :: rec)) [1,2,3]
-
-#eval (List.rec (motive := λ _ => List Nat) (appBase [4,5])
-  (fun (h : Nat) (t : List Nat) (rec : List Nat) => h :: rec)) []
 /-
 *******************
 #2 [30 points] Sets
@@ -357,37 +361,31 @@ involved here.
 -/
 
 -- a ∩ b
+-- ANSWER
 def interab : Set Nat := {2}
 
 -- a \ b
+-- ANSWER{
 def diffab : Set Nat := {1,3}
 
 -- a × c
-def prodac : Set (Nat × Nat) := {(1,0), (1,1), (2,0), (2,1), (3,0), (3,1)}
+-- ANSWER
+def prodac : Set (Nat × Nat) := {(1,0),(1,1),(2,0),(2,1),(3,0),(3,1)}
 
 -- 𝒫 c
-def powc : Set (Set Nat) := {∅, {0}, {1}, {0, 1}}
+-- ANSWER
+def powc : Set (Set Nat) := {{},{0},{1},{1,0}}
 
 -- 𝒫 (a × c)
-
+-- ANSWER
 def powac : Set (Set (Nat × Nat)) :=
   {
-    ∅,
-  {(1,0)}, {(1,1)}, {(2,0)}, {(2,1)}, {(3,0)}, {(3,1)},
-  {(1,0), (1,1)}, {(1,0), (2,0)}, {(1,0), (2,1)}, {(1,0), (3,0)}, {(1,0), (3,1)},
-  {(1,1), (2,0)}, {(1,1), (2,1)}, {(1,1), (3,0)}, {(1,1), (3,1)},
-  {(2,0), (2,1)}, {(2,0), (3,0)}, {(2,0), (3,1)},
-  {(2,1), (3,0)}, {(2,1), (3,1)},
-  {(3,0), (3,1)},
-  {(1,0), (1,1), (2,0)}, {(1,0), (1,1), (2,1)}, {(1,0), (1,1), (3,0)}, {(1,0), (1,1), (3,1)},
-  {(1,0), (2,0), (2,1)}, {(1,0), (2,0), (3,0)}, {(1,0), (2,0), (3,1)},
-  {(1,1), (2,0), (2,1)}, {(1,1), (2,0), (3,0)}, {(1,1), (2,0), (3,1)},
-  {(2,0), (2,1), (3,0)}, {(2,0), (2,1), (3,1)},
-  {(1,0), (1,1), (2,0), (2,1)}, {(1,0), (1,1), (2,0), (3,0)}, {(1,0), (1,1), (2,0), (3,1)},
-  {(1,0), (2,0), (2,1), (3,0)}, {(1,0), (2,0), (2,1), (3,1)},
-  {(1,1), (2,0), (2,1), (3,0)}, {(1,1), (2,0), (2,1), (3,1)},
-  {(1,0), (1,1), (2,0), (2,1), (3,0)}, {(1,0), (1,1), (2,0), (2,1), (3,1)},
-  {(1,0), (1,1), (2,0), (2,1), (3,0), (3,1)}
+    {},
+    {(1,0)},
+    {(1,1)},
+    {(2,0)},
+    /-etc-/
+    {(1,0), (2,0)} /-etc-/
   }
 
 
@@ -405,7 +403,9 @@ condition must be satisfied to conclude that (a ⊊ b),
 i.e., that a is a proper subset of b. Emphasis here
 is on *proper* subset.
 
-HERE:
+-- ANSWER
+HERE: a is a proper subset of b if every element in a
+is in b, and there is some element in b that's not in a.
 
 Next give a formal specification in Lean of the
 predicate that defines the subset relation. You
@@ -414,34 +414,43 @@ it means for s1 to be a proper subset of s2. You
 are not asked to prove anything for this question.
 -/
 
+-- ANSWER
 def mySubsetNotEq (α : Type) (s1 s2 : Set α) : Prop :=
-  (∀ x, x ∈ s1 → x ∈ s2) ∧ (∃ x, x ∈ s2 ∧ x ∉ s1)
+  (∀ (a : α), a ∈ s1 → a ∈ s2) ∧
+  (∃ (b : α), b ∈ s2 ∧ b ∉ s1)
 
 
 /-
 2C. [5 points].
 
-Give a formal proof of the proposition that c ⊆ a (subset,
+Give a formal proof of the proposition that ¬(c ⊆ a) (subset,
 not proper subset). Use "example" so that we don't have to
 bind a name to the proof. If you're unable to prove it in
 Lean, for partial credit, give an English proof, but be sure
 it includes all of the reasoning you'd have in a formal proof.
 -/
 
-example : c ⊆ a := by
--- Expand what it means to be a subset
-  intro x hx
-  -- We know c = {0, 1}, so x must be 0 or 1
-  simp [c] at hx
-  -- Now we have cases for x
-  cases hx with
-  | inl h0 => -- case x = 0
-    simp [a]
-    sorry     -- This case should fail as 0 ∉ a
-  | inr h1 => -- case x = 1
-    simp [a]
-    apply Or.inl
-    exact h1
+-- ANSWER FULL CREDIT
+#reduce Set.Subset
+example : ¬(c ⊆ a) :=
+  fun h =>
+    let cinc : c 0 := Or.inl rfl
+    let cina := h cinc
+    nomatch cina
+
+-- ANSWER PARTIAL CREDIT (3 points)
+-- Answer must include reference to the membership
+-- predicates.
+/-
+Proof by negation. Assume c ⊆ a. That means that every
+value in c is in a. Zero is in c, as it satisfies the
+membership predicate for c, namely n = 0 ∨ n = 1. By the
+assumption that means that 0 ∈ a. But that's impossible
+as 0 doesn't satisfy the membership predicate for a (i.e.,
+0 = 1 ∨ 0 = 2 ∨ 0 = 3) has no proof. So c ⊆ a is wrong,
+and by negation we conclude ¬(c ⊆ a). QED.
+-/
+
 
 
 /-
@@ -452,12 +461,13 @@ do it in Lean, give the proof in English. The same rules
 for partial credit applies here as in the previous problen.
 -/
 
+-- ANSWER
 example : 2 ∉ c :=
   (
-    fun h => by
-    -- Expand what c is
-    simp [c] at h
-    -- Now h says 2 = 0 ∨ 2 = 1
+    fun h =>
+    (
+      nomatch h
+    )
   )
 
 
@@ -487,32 +497,11 @@ properties? List the answers after the colons. To get
 credit for each part you must list all and only those
 functions with the specified properties.
 
-- injective:
-(one-to-one): A function is injective if different inputs map to different outputs
-- idf: Yes (true→true, false→false)
-- fls: No (both inputs map to false)
-- tru: No (both inputs map to true)
-- not: Yes (true→false, false→true)
 
-hence, idf, not
-
-- surjective:
-(onto): A function is surjective if every possible output value is mapped to by some input
-- idf: Yes (both true and false are outputs)
-- fls: No (true is never an output)
-- tru: No (false is never an output)
-- not: Yes (both true and false are outputs)
-
-idf, not
-
-- bijective:
-(both injective and surjective):
-- idf: Yes (it's both injective and surjective)
-- fls: No (neither injective nor surjective)
-- tru: No (neither injective nor surjective)
-- not: Yes (it's both injective and surjective)
-
-idf, not
+-- ANSWER
+- injective: idf, not
+- surjective: idf, not
+- bijective: idf, not
 
 -/
 
@@ -522,13 +511,12 @@ is not a function. Give the set of pairs that are
 in the relation by filling in the pairs between
 the \{ and the \} as follows:
 
-Here: notFun := { ... }.
+ANSWER (there is another answer: one value has to
+go to many).
+Here: notFun := {(true, true), (true,false)}.
 -/
 
-def notFun : Set (Bool × Bool) := {(true, true), (true, false)}
 
--- This relation is not a function because it maps true to both true and false,
--- violating the single-valued property of functions.
 
 /-
 B. [15 points] Formal proof of single valuedness.
@@ -545,7 +533,8 @@ Now here's a definition of not as a relation.
 -/
 
 def neg : Rel Bool Bool := fun x y =>
-  (x = true ∧ y = false) ∨ (x = false ∧ y = true)
+  (x = true ∧ y = false) ∨
+  (x = false ∧ y = true)
 
 /-
 Your job is to prove that neg is singleValued.
@@ -569,6 +558,11 @@ various points in the proof construction to see the
 proof state at each point in its develoment.
 -/
 
+
+/-
+GRADING: Each part worth 4 points. If they get all 4
+parts right, yes, they get one extra credit point.
+-/
 example : isSingleValued neg :=
 -- assume the premises are true and we have proofs
 (fun a b c hab hac =>
@@ -585,33 +579,40 @@ example : isSingleValued neg :=
         let bf := atbf.right
         let cf := atcf.right
         by
-          rw [bf, cf]  -- both b and c are false
-    -- second next case: a = false ∧ c = true
+          -- ANSWER #A
+          rw [←cf] at bf
+          -- (exact bf will also work here)
+          assumption
+
+    -- second nested case: a = false ∧ c = true
     | Or.inr afct =>
       let bt := atbf.left
       let af := afct.left
       by
         rw [bt] at af
-        contradiction  -- can't be both true and false
+
+        -- ANSWER #B
+        nomatch af
 
   -- second outer case: a = false ∧ b = true
   | Or.inr afbt =>
     -- first inner case: a = true ∧ c = false
     match hac with
     | Or.inl atcf =>
-      let af := atcf.left  -- a is true
-      let xa := afbt.left  -- a is false from first assumption   -- a is true from second assumption
+      let xa := afbt.left
+      let xb := atcf.left
       by
-        rw [xa] at af   -- this creates the explicit contradiction
-        contradiction
+        -- ANSWER #C
+        rw [xa] at xb
+        nomatch xb
 
     -- second inner case: a = false ∧ c = true
     | Or.inr afct =>
-      let bt := afbt.right
-      let ct := afct.right
-      by
-        rw [bt, ct]  -- both b and c are true
+       -- ANSWER #D
+       by
+        rw [afbt.right, afct.right]
 )
+
 
 /-
 C. [5 points]
@@ -629,14 +630,65 @@ explain the reasoning in each case correctly.
 -/
 
 /-
-By the definition of injective,
-we need to show that if neg(x₁) = neg(x₂), then x₁ = x₂.
-Consider the possible values of x₁ and x₂:
-- If x₁ = true, then neg(x₁) = false. If neg(x₂) = false, then x₂ must be true.
-- If x₁ = false, then neg(x₁) = true. If neg(x₂) = true, then x₂ must be false.
-In both cases, equal outputs imply equal inputs, proving injectivity
+GRADING:
 
+We will take an answer for either "negation single
+valued" (as above) or "negation is injective" (which
+is what I meant.)
+
+ANSWER, informal: (credit if the case analysis is right
+and the reasoning is right in each case)
+
+To show that the neg relation is single valued (it's a
+function) and that it's an injective relation. Proof is
+by And introduction.
+
+PROOF OF SINGLE VALUED (FUNCTION)
+
+Proof single valued: What is to be proved is that for
+all a b c, if neg a = b and neg a = c then b = c. So
+suppose that neg a = b and neg a = c. Proof is by case
+analysis.
+
+Case 1: a = true ∧ b = false and a = true ∧ c = false.
+In this case, b = c.
+
+Case 2: a = true ∧ b = false and a = false ∧ c = true.
+We can ignore this case as it's not possible for b to be
+both false and true.
+
+Case 3: a = false ∧ b = true and  a = true ∧ c = false.
+We can ignore this case as it's not possible for a to be
+both false and true.
+
+Case 4:  a = false ∧ b = true and a = false ∧ c = true.
+In this case b = c.
+
+In all possible cases, b = c. QED.
+
+PROOF OF INJECTIVE:
+
+Here we need to show if neg a c and neg b c then a = b.
+The proof is by the same case analysis.
+
+Case 1: a = true ∧ c = false and b = true ∧ c = false.
+In this case, a = b.
+
+Case 2: a = true ∧ c = false and b = false ∧ c = true.
+We can ignore this case as it's not possible for c to be
+both false and true.
+
+Case 3: a = false ∧ c = true and  b = true ∧ c = false.
+We can ignore this case as it's not possible for c to be
+both false and true.
+
+Case 4:  a = false ∧ c = true and b = false ∧ c = true.
+In this case a = b.
+
+As the conclusion holds in all possible cases the
+theorem is proved. QED.
 -/
+
 
 /-
 *********************************
@@ -664,9 +716,10 @@ Give a formal proof of the proposition that
 and what does that mean?
 -/
 
+-- ANSWER
 def not0eq1 : 0 ≠ 1 :=
 (
-  fun h => Nat.noConfusion h
+  fun h => nomatch h
 )
 
 /-/
@@ -677,14 +730,10 @@ with such a proof by proving the follwing
 proposition.
 -/
 
+-- ANSWER
 example (P : Prop): P → ¬P → False :=
-fun hp hnp => hnp hp
+fun p np => False.elim (np p)
 
-/-
-1. ¬P means P → False
-2. Given hp : P and hnp : P → False
-3. We can apply hnp to hp to get False
--/
 
 /-
 EXTRA CREDIT [5 points]:
@@ -697,38 +746,29 @@ must assume ¬P, derive a contradiction, conlude P.
 Step 1 is to assumpe ¬P. Give an English-language
 expression of the proposition, ¬P.
 
-Here:
-
-Step 1: Assume ¬P (negation of "there is no smallest real number")
-- ¬P means "It is not the case that there is no smallest real number"
-- This is equivalent to "There exists a smallest real number"
-- Let's call this hypothetical smallest real number r
+ANSWER #A
+Here: Let P be be the given proposition, that there
+is not a smallest real number. ¬P thus asserts that
+it is *not* the case that there is not a smallest
+real number. By classical reasoning ¬P asserts that
+***there is a smallest real number***.
 
 
 Step 2 is to derive a contradiction enabling
 you to conclude that P is true. Explain how
 you will arrive at a contradiction.
 
-Step 2: Derive a contradiction:
-1. Given our assumption, r is the smallest real number
-2. Consider r/2 (half of r)
-3. We can prove r/2 < r:
-- Since r is a real number, r/2 + r/2 = r
-- Therefore r/2 < r (because if we need two copies of r/2 to equal r,
-one copy must be less than r)
-4. But this contradicts our assumption that r was the smallest real number
-- We found a real number (r/2) that is smaller than our supposedly smallest number (r)
-5. Therefore, our assumption that there exists a smallest real number must be false
-6. Thus, we conclude P: there is no smallest real number
+ANSWER #B.
+If there is a smallest real number, we can give it
+a name. (one additional extra extra credit point if
+the student states this is by exists elimination).
 
-This is a proof by contradiction because:
-1. We assumed the negation of what we wanted to prove (¬P)
-2. We derived a logical contradiction from this assumption
-3. By the law of excluded middle (P ∨ ¬P must be true) and
-our proof that ¬P leads to a contradiction
-4. We can conclude that P must be true
+Now let t = r/2. This t is clearly between 0 and r,
+and so is smaller than r. This conclusion contradicts
+the assumption, ¬P, which led to r being the smallest
+real number. The assumption is thus wrong, so it is
+not the case there there is a smallest real number,
+which is what we set out to prove.
 
-The key insight is that for any proposed "smallest" real number r,
-we can always construct a smaller real number (r/2),
-making it impossible for any real number to be the smallest.
+QED.
 -/
